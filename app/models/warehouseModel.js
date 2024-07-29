@@ -26,18 +26,20 @@ export async function findAll(){
 export const findById = async (id) => {
     try {
         const [[warehouseFound]] = await pool.query("SELECT * FROM warehouses WHERE id = ?", [id]);
+        if (!warehouseFound) {
+            throw new Error("Warehouse not found")
+        }
         return warehouseFound;
     }       
     catch (error) {
-        throw new Error("Warehouse not found", error)
+        console.log("Error:", error)
     }
 }
 
-export const update = async(id, newWarehouse) => {
-    console.log(id);
+export const updateInModel = async(id, newWarehouse) => {
     try {
-        const [ resolve ] = await pool.query("UPDATE warehouses SET name = ?, location = ? WHERE id = ?", [newWarehouse.name, newWarehouse.location, id])
-        return resolve
+        await pool.query("UPDATE warehouses SET name = ?, location = ? WHERE id = ?", [newWarehouse.name, newWarehouse.location, id])
+        return;
     } catch (error) {
         throw new Error("Warehouse has not been updated", error )
     }
@@ -46,11 +48,21 @@ export const update = async(id, newWarehouse) => {
 export const updateWarehouse = async (id, newWarehouse) => {
     try{
        await findById(id);
-       await update(id, newWarehouse);
-       return "Warehouse updated";
+       await updateInModel(id, newWarehouse);
+       return newWarehouse;
 
     }catch(err){
         throw new Error("Warehouse has not been updated", err )
     }
 
 };
+
+export const removeWarehouse = async (id) => {
+    try {
+        const warehouseDeleted = await findById(id);
+        await pool.query("DELETE from warehouses WHERE id = ?", id);
+        return warehouseDeleted;
+    } catch (err) {
+        throw new Error("Warehouse has not been deleted", err)
+    }
+}

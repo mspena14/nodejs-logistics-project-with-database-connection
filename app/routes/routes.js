@@ -1,5 +1,5 @@
 import express from 'express';
-import warehouseRouter from '../router/warehouses.js';
+import warehouseRouter from '../router/warehousesRouter.js';
 
 const routes = express();
 
