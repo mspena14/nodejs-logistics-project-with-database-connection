@@ -2,7 +2,6 @@ import { findAll, save, updateWarehouse, removeWarehouse, findById } from "../mo
 
 export const getAll = async (_,res) => {
     const warehouses = await findAll();
-    console.log(warehouses);
     res.json({message: "Ok", data: warehouses})
 };
 
@@ -14,7 +13,6 @@ export const getOne = async (req, res) => {
 
 export const insert = async (req, res) => {
     const { name , location } = req.body;
-    console.log(name, location);
     const warehouseCreated = await save({name, location});
 
     res.status(201).send({
